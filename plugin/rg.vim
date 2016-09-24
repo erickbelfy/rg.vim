@@ -5,3 +5,4 @@
 "
 "
 command! -bang -nargs=* -complete=file Rg call rg#Rg('grep<bang>',<q-args>)
+command! -bang -nargs=* -complete=file RgBuffer call rg#RgBuffer('grep<bang>',<q-args>)

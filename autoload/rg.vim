@@ -3,7 +3,7 @@ if !exists("g:rg_prg")
   if split(system("rg --column"), "[ \n\r\t]")[2] =~ '\d\+.\(\(2[5-9]\)\|\([3-9][0-9]\)\)\(.\d\+\)\?'
     let g:rg_prg="rg --column"
   else
-    let g:rg_prg="rg --column --no-heading"
+    let g:rg_prg="rg --color=always --column --no-heading"
   endif
 endif
 
