@@ -3,7 +3,7 @@ if !exists("g:rg_prg")
   if split(system("rg --column"), "[ \n\r\t]")[2] =~ '\d\+.\(\(2[5-9]\)\|\([3-9][0-9]\)\)\(.\d\+\)\?'
     let g:rg_prg="rg --column"
   else
-    let g:rg_prg="rg --color=always --column --no-heading"
+    let g:rg_prg="rg --column --no-heading"
   endif
 endif
 
@@ -71,7 +71,7 @@ function! rg#Rg(cmd, args)
   elseif exists("s:rg_format_backup")
     let g:rg_format=s:rg_format_backup
   elseif !exists("g:rg_format")
-    let g:rg_format="%f:%l:%c:%m"
+    let g:rg_format="%f:%m"
   endif
 
   let l:grepprg_bak=&grepprg
@@ -120,6 +120,7 @@ function! rg#Rg(cmd, args)
     let l:matches_window_prefix = 'c' " we're using the quickfix window
   endif
 
+  echoe  l:match_count
   " If highlighting is on, highlight the search keyword.
   if exists('g:rg_highlight')
     let @/ = matchstr(a:args, "\\v(-)\@<!(\<)\@<=\\w+|['\"]\\zs.{-}\\ze['\"]")
