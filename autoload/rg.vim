@@ -1,10 +1,23 @@
+"--------
+"Variables
+"--------
+"
 " Location of the rg utility
 if !exists("g:rg_prg")
-  if split(system("rg --column"), "[ \n\r\t]")[2] =~ '\d\+.\(\(2[5-9]\)\|\([3-9][0-9]\)\)\(.\d\+\)\?'
-    let g:rg_prg="rg --column"
+  if split(system("rg --version"), "[ \n\r\t]")[1] =~ '\d\+.\(\([0-9]\)\|\([5-9][0-9]\)\)\(.\d\+\)\?'
+    let g:rg_prg="rg --vimgrep --no-heading"
   else
     let g:rg_prg="rg --column --no-heading"
   endif
+endif
+
+if exists('g:rg_use_dispatch')
+  if g:rg_use_dispatch && !exists(':Dispatch')
+    call s:Warn('Dispatch not loaded! Falling back to g:ack_use_dispatch = 0.')
+    let g:rg_use_dispatch = 0
+  endif
+else
+  let g:rg_use_dispatch = 0
 endif
 
 if !exists("g:rg_apply_qmappings")
@@ -31,6 +44,9 @@ if !exists("g:rg_working_path_mode")
     let g:rg_working_path_mode = 'c'
 endif
 
+"------
+" API
+"------
 function! rg#RgBuffer(cmd, args)
   let l:bufs = filter(range(1, bufnr('$')), 'buflisted(v:val)')
   let l:files = []
@@ -120,12 +136,9 @@ function! rg#Rg(cmd, args)
     let l:matches_window_prefix = 'c' " we're using the quickfix window
   endif
 
-  echoe  l:match_count
-  " If highlighting is on, highlight the search keyword.
-  if exists('g:rg_highlight')
-    let @/ = matchstr(a:args, "\\v(-)\@<!(\<)\@<=\\w+|['\"]\\zs.{-}\\ze['\"]")
-    call feedkeys(":let &hlsearch=1 \| echo \<CR>", 'n')
-  end
+  echoe 'Searching....'
+  let @/ = matchstr(a:args, "\\v(-)\@<!(\<)\@<=\\w+|['\"]\\zs.{-}\\ze['\"]")
+  call feedkeys(":let &hlsearch=1 \| echo \<CR>", 'n')
 
   redraw!
 
